@@ -13,7 +13,10 @@ class FirestoreService {
   // Get student by UID
   Future<StudentModel?> getStudent(String uid) async {
     try {
-      DocumentSnapshot doc = await _firestore.collection(AppConstants.studentsCollection).doc(uid).get();
+      DocumentSnapshot doc = await _firestore
+          .collection(AppConstants.studentsCollection)
+          .doc(uid)
+          .get();
       if (doc.exists) {
         return StudentModel.fromMap(doc.data() as Map<String, dynamic>);
       }
@@ -25,7 +28,10 @@ class FirestoreService {
 
   // Update student profile
   Future<void> updateStudent(StudentModel student) async {
-    await _firestore.collection(AppConstants.studentsCollection).doc(student.uid).update(student.toMap());
+    await _firestore
+        .collection(AppConstants.studentsCollection)
+        .doc(student.uid)
+        .update(student.toMap());
   }
 
   // ============= CLUB OPERATIONS =============
@@ -33,7 +39,10 @@ class FirestoreService {
   // Get club by ID
   Future<ClubModel?> getClub(String clubId) async {
     try {
-      DocumentSnapshot doc = await _firestore.collection(AppConstants.clubsCollection).doc(clubId).get();
+      DocumentSnapshot doc = await _firestore
+          .collection(AppConstants.clubsCollection)
+          .doc(clubId)
+          .get();
       if (doc.exists) {
         return ClubModel.fromMap(doc.data() as Map<String, dynamic>);
       }
@@ -46,20 +55,28 @@ class FirestoreService {
   // Get all clubs
   Stream<List<ClubModel>> getAllClubs() {
     return _firestore.collection(AppConstants.clubsCollection).snapshots().map(
-      (snapshot) => snapshot.docs.map((doc) => ClubModel.fromMap(doc.data())).toList(),
-    );
+          (snapshot) => snapshot.docs
+              .map((doc) => ClubModel.fromMap(doc.data()))
+              .toList(),
+        );
   }
 
   // Update club
   Future<void> updateClub(ClubModel club) async {
-    await _firestore.collection(AppConstants.clubsCollection).doc(club.clubId).update(club.toMap());
+    await _firestore
+        .collection(AppConstants.clubsCollection)
+        .doc(club.clubId)
+        .update(club.toMap());
   }
 
   // ============= EVENT OPERATIONS =============
 
   // Add event
   Future<void> addEvent(EventModel event) async {
-    await _firestore.collection(AppConstants.eventsCollection).doc(event.eventId).set(event.toMap());
+    await _firestore
+        .collection(AppConstants.eventsCollection)
+        .doc(event.eventId)
+        .set(event.toMap());
   }
 
   // Get events by club ID
@@ -69,7 +86,9 @@ class FirestoreService {
         .where('clubId', isEqualTo: clubId)
         .snapshots()
         .map(
-          (snapshot) => snapshot.docs.map((doc) => EventModel.fromMap(doc.data())).toList(),
+          (snapshot) => snapshot.docs
+              .map((doc) => EventModel.fromMap(doc.data()))
+              .toList(),
         );
   }
 
@@ -83,32 +102,45 @@ class FirestoreService {
         .where('clubId', whereIn: clubIds)
         .snapshots()
         .map(
-          (snapshot) => snapshot.docs.map((doc) => EventModel.fromMap(doc.data())).toList(),
+          (snapshot) => snapshot.docs
+              .map((doc) => EventModel.fromMap(doc.data()))
+              .toList(),
         );
   }
 
   // Get all events
   Stream<List<EventModel>> getAllEvents() {
     return _firestore.collection(AppConstants.eventsCollection).snapshots().map(
-      (snapshot) => snapshot.docs.map((doc) => EventModel.fromMap(doc.data())).toList(),
-    );
+          (snapshot) => snapshot.docs
+              .map((doc) => EventModel.fromMap(doc.data()))
+              .toList(),
+        );
   }
 
   // Update event
   Future<void> updateEvent(EventModel event) async {
-    await _firestore.collection(AppConstants.eventsCollection).doc(event.eventId).update(event.toMap());
+    await _firestore
+        .collection(AppConstants.eventsCollection)
+        .doc(event.eventId)
+        .update(event.toMap());
   }
 
   // Delete event
   Future<void> deleteEvent(String eventId) async {
-    await _firestore.collection(AppConstants.eventsCollection).doc(eventId).delete();
+    await _firestore
+        .collection(AppConstants.eventsCollection)
+        .doc(eventId)
+        .delete();
   }
 
   // ============= JOIN REQUEST OPERATIONS =============
 
   // Submit join request
   Future<void> submitJoinRequest(JoinRequestModel request) async {
-    await _firestore.collection(AppConstants.joinRequestsCollection).doc(request.requestId).set(request.toMap());
+    await _firestore
+        .collection(AppConstants.joinRequestsCollection)
+        .doc(request.requestId)
+        .set(request.toMap());
   }
 
   // Get join requests for club
@@ -119,13 +151,25 @@ class FirestoreService {
         .where('status', isEqualTo: 'pending')
         .snapshots()
         .map(
-          (snapshot) => snapshot.docs.map((doc) => JoinRequestModel.fromMap(doc.data())).toList(),
+          (snapshot) => snapshot.docs.map((doc) {
+            final data = doc.data();
+            // Ensure requestId is set from document ID if not in data
+            if (!data.containsKey('requestId') ||
+                data['requestId'] == null ||
+                data['requestId'] == '') {
+              data['requestId'] = doc.id;
+            }
+            return JoinRequestModel.fromMap(data);
+          }).toList(),
         );
   }
 
   // Update join request
   Future<void> updateJoinRequest(JoinRequestModel request) async {
-    await _firestore.collection(AppConstants.joinRequestsCollection).doc(request.requestId).update(request.toMap());
+    await _firestore
+        .collection(AppConstants.joinRequestsCollection)
+        .doc(request.requestId)
+        .update(request.toMap());
   }
 
   // Check if student already requested to join
@@ -146,7 +190,9 @@ class FirestoreService {
         .where('joinedClubs', arrayContains: clubId)
         .snapshots()
         .map(
-          (snapshot) => snapshot.docs.map((doc) => StudentModel.fromMap(doc.data())).toList(),
+          (snapshot) => snapshot.docs
+              .map((doc) => StudentModel.fromMap(doc.data()))
+              .toList(),
         );
   }
 
@@ -155,6 +201,17 @@ class FirestoreService {
   // Accept join request - THIS IS THE KEY METHOD!
   Future<void> acceptJoinRequest(JoinRequestModel request) async {
     try {
+      // Validate that all required fields are present
+      if (request.requestId.isEmpty) {
+        throw Exception('Request ID is missing');
+      }
+      if (request.studentUid.isEmpty) {
+        throw Exception('Student UID is missing');
+      }
+      if (request.clubId.isEmpty) {
+        throw Exception('Club ID is missing');
+      }
+
       WriteBatch batch = _firestore.batch();
 
       // 1. Update request status to 'accepted'
@@ -175,9 +232,7 @@ class FirestoreService {
       DocumentReference clubRef = _firestore
           .collection(AppConstants.clubsCollection)
           .doc(request.clubId);
-      batch.update(clubRef, {
-        'totalMembers': FieldValue.increment(1)
-      });
+      batch.update(clubRef, {'totalMembers': FieldValue.increment(1)});
 
       // Execute all operations atomically
       await batch.commit();
@@ -214,17 +269,104 @@ class FirestoreService {
       });
 
       // 2. Decrement club's totalMembers count
-      DocumentReference clubRef = _firestore
-          .collection(AppConstants.clubsCollection)
-          .doc(clubId);
-      batch.update(clubRef, {
-        'totalMembers': FieldValue.increment(-1)
-      });
+      DocumentReference clubRef =
+          _firestore.collection(AppConstants.clubsCollection).doc(clubId);
+      batch.update(clubRef, {'totalMembers': FieldValue.increment(-1)});
 
       // Execute all operations atomically
       await batch.commit();
     } catch (e) {
       print('Error removing member from club: $e');
+      rethrow;
+    }
+  }
+
+  // ============= UTILITY/MAINTENANCE OPERATIONS =============
+
+  // Fix missing clubId fields in all club documents
+  Future<void> fixMissingClubIds() async {
+    try {
+      print('Starting to fix missing clubIds...');
+
+      QuerySnapshot clubsSnapshot =
+          await _firestore.collection(AppConstants.clubsCollection).get();
+
+      WriteBatch batch = _firestore.batch();
+      int updateCount = 0;
+
+      for (var doc in clubsSnapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+
+        // Check if clubId is missing or empty
+        if (!data.containsKey('clubId') ||
+            data['clubId'] == null ||
+            data['clubId'] == '') {
+          print('Fixing clubId for document: ${doc.id}');
+          batch.update(doc.reference, {'clubId': doc.id});
+          updateCount++;
+        }
+      }
+
+      if (updateCount > 0) {
+        await batch.commit();
+        print('Successfully fixed $updateCount club documents');
+      } else {
+        print('No clubs needed fixing');
+      }
+    } catch (e) {
+      print('Error fixing club IDs: $e');
+      rethrow;
+    }
+  }
+
+  // Fix missing clubId in join requests
+  Future<void> fixMissingJoinRequestClubIds() async {
+    try {
+      print('Starting to fix missing clubIds in join requests...');
+
+      QuerySnapshot requestsSnapshot = await _firestore
+          .collection(AppConstants.joinRequestsCollection)
+          .get();
+
+      WriteBatch batch = _firestore.batch();
+      int updateCount = 0;
+      int skippedCount = 0;
+
+      for (var doc in requestsSnapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+
+        // Check if clubId is missing or empty
+        if (!data.containsKey('clubId') ||
+            data['clubId'] == null ||
+            data['clubId'] == '') {
+          // Try to extract clubId from requestId (format: studentUid_clubId_timestamp)
+          String requestId = data['requestId'] ?? doc.id;
+          List<String> parts = requestId.split('_');
+
+          if (parts.length >= 3) {
+            String extractedClubId = parts[1];
+            print('Fixing clubId for request ${doc.id}: $extractedClubId');
+            batch.update(doc.reference, {'clubId': extractedClubId});
+            updateCount++;
+          } else {
+            print('Cannot extract clubId from request ${doc.id}');
+            skippedCount++;
+          }
+        }
+      }
+
+      if (updateCount > 0) {
+        await batch.commit();
+        print('Successfully fixed $updateCount join request documents');
+      } else {
+        print('No join requests needed fixing');
+      }
+
+      if (skippedCount > 0) {
+        print('Warning: $skippedCount requests could not be fixed');
+      }
+    } catch (e) {
+      print('Error fixing join request club IDs: $e');
       rethrow;
     }
   }

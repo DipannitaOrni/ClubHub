@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/club_model.dart';
 import '../../models/student_model.dart';
+import '../../models/event_model.dart';
 import '../../models/join_request_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/data_provider.dart';
 import '../../services/firestore_service.dart';
 import '../../utils/theme.dart';
+import 'package:intl/intl.dart';
 
 class ClubDetailsScreen extends StatefulWidget {
   final ClubModel club;
@@ -36,7 +38,7 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
   Future<void> _checkJoinRequest() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
-    
+
     if (authProvider.currentUser != null) {
       bool hasPending = await dataProvider.hasJoinRequest(
         authProvider.currentUser!.uid,
@@ -49,7 +51,6 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
   Future<void> _submitJoinRequest() async {
     setState(() => _isLoading = true);
 
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
     final student = dataProvider.currentStudent;
 
@@ -59,7 +60,8 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
     }
 
     final request = JoinRequestModel(
-      requestId: '${student.uid}_${widget.club.clubId}_${DateTime.now().millisecondsSinceEpoch}',
+      requestId:
+          '${student.uid}_${widget.club.clubId}_${DateTime.now().millisecondsSinceEpoch}',
       clubId: widget.club.clubId,
       studentUid: student.uid,
       studentName: student.fullName,
@@ -80,7 +82,8 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
           content: const Text('Join request submitted successfully!'),
           backgroundColor: AppTheme.primaryOrange,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
     }
@@ -171,13 +174,15 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                         padding: const EdgeInsets.all(24),
                         child: Center(
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
                             decoration: BoxDecoration(
                               color: AppTheme.primaryOrange,
                               borderRadius: BorderRadius.circular(25),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppTheme.primaryOrange.withOpacity(0.3),
+                                  color:
+                                      AppTheme.primaryOrange.withOpacity(0.3),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -305,7 +310,6 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                               ],
                             ),
                             const SizedBox(height: 16),
-
                             if (widget.club.clubPosts.isEmpty)
                               Container(
                                 padding: const EdgeInsets.all(32),
@@ -319,7 +323,8 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                       Icon(
                                         Icons.people_outline_rounded,
                                         size: 48,
-                                        color: AppTheme.textSecondary.withOpacity(0.5),
+                                        color: AppTheme.textSecondary
+                                            .withOpacity(0.5),
                                       ),
                                       const SizedBox(height: 12),
                                       const Text(
@@ -339,6 +344,40 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                 String studentUid = entry.value;
                                 return _buildClubPostCard(roleName, studentUid);
                               }),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Past Events section
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  width: 4,
+                                  height: 24,
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.primaryOrange,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                const Text(
+                                  'Past Events',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.textPrimary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            _buildPastEventsList(),
                           ],
                         ),
                       ),
@@ -369,7 +408,9 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                   ],
                 ),
                 child: ElevatedButton(
-                  onPressed: _hasRequestPending || _isLoading ? null : _submitJoinRequest,
+                  onPressed: _hasRequestPending || _isLoading
+                      ? null
+                      : _submitJoinRequest,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryOrange,
                     disabledBackgroundColor: AppTheme.textTertiary,
@@ -385,19 +426,24 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                           width: 24,
                           child: CircularProgressIndicator(
                             strokeWidth: 2.5,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              _hasRequestPending ? Icons.schedule : Icons.add_circle_outline,
+                              _hasRequestPending
+                                  ? Icons.schedule
+                                  : Icons.add_circle_outline,
                               color: Colors.white,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              _hasRequestPending ? 'Request Pending' : 'Request to Join',
+                              _hasRequestPending
+                                  ? 'Request Pending'
+                                  : 'Request to Join',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -410,6 +456,215 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildPastEventsList() {
+    return StreamBuilder<List<EventModel>>(
+      stream: _firestoreService.getEventsByClub(widget.club.clubId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Container(
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Center(
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.event_busy_rounded,
+                    size: 48,
+                    color: AppTheme.textSecondary.withOpacity(0.5),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'No events conducted yet',
+                    style: TextStyle(
+                      color: AppTheme.textSecondary,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        final pastEvents = snapshot.data!
+            .where((event) => event.isPast)
+            .toList()
+          ..sort((a, b) => b.eventDate.compareTo(a.eventDate));
+
+        if (pastEvents.isEmpty) {
+          return Container(
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Center(
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.history_rounded,
+                    size: 48,
+                    color: AppTheme.textSecondary.withOpacity(0.5),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'No past events yet',
+                    style: TextStyle(
+                      color: AppTheme.textSecondary,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // Show only the 3 most recent past events
+        final displayEvents = pastEvents.take(3).toList();
+
+        return Column(
+          children: [
+            ...displayEvents.map((event) => _buildPastEventCard(event)),
+            if (pastEvents.length > 3)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '+ ${pastEvents.length - 3} more events',
+                      style: const TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildPastEventCard(EventModel event) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppTheme.primaryBlue.withOpacity(0.2),
+                    AppTheme.primaryBlue.withOpacity(0.1),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: const Icon(
+                Icons.event_available_rounded,
+                color: AppTheme.primaryBlue,
+                size: 28,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    event.eventName,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today_rounded,
+                        size: 12,
+                        color: AppTheme.textSecondary,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        DateFormat('MMM dd, yyyy').format(event.eventDate),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppTheme.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Icon(
+                        Icons.location_on_rounded,
+                        size: 12,
+                        color: AppTheme.textSecondary,
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          event.eventLocation,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppTheme.textSecondary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -451,7 +706,7 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
 
         String studentName = 'Unknown';
         String studentEmail = '';
-        
+
         if (snapshot.hasData && snapshot.data != null) {
           studentName = snapshot.data!.fullName;
           studentEmail = snapshot.data!.email;
@@ -500,7 +755,8 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: AppTheme.primaryOrange.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(6),
@@ -544,7 +800,8 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
     );
   }
 
-  Widget _buildStatItem(String label, String value, IconData icon, Color color) {
+  Widget _buildStatItem(
+      String label, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(

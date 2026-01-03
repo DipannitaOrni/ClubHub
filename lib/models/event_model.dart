@@ -9,6 +9,7 @@ class EventModel {
   final String eventLocation;
   final bool isCompleted;
   final DateTime createdAt;
+  final int totalRegistrations;
 
   EventModel({
     required this.eventId,
@@ -19,10 +20,11 @@ class EventModel {
     required this.eventLocation,
     this.isCompleted = false,
     required this.createdAt,
+    this.totalRegistrations = 0,
   });
 
   bool get isUpcoming => eventDate.isAfter(DateTime.now()) && !isCompleted;
-  bool get isPast => eventDate.isBefore(DateTime.now()) || isCompleted;
+  bool get isPast => !eventDate.isAfter(DateTime.now()) || isCompleted;
 
   Map<String, dynamic> toMap() {
     return {
@@ -34,6 +36,7 @@ class EventModel {
       'eventLocation': eventLocation,
       'isCompleted': isCompleted,
       'createdAt': Timestamp.fromDate(createdAt),
+      'totalRegistrations': totalRegistrations,
     };
   }
 
@@ -47,6 +50,7 @@ class EventModel {
       eventLocation: map['eventLocation'] ?? '',
       isCompleted: map['isCompleted'] ?? false,
       createdAt: (map['createdAt'] as Timestamp).toDate(),
+      totalRegistrations: map['totalRegistrations'] ?? 0,
     );
   }
 
@@ -56,6 +60,7 @@ class EventModel {
     DateTime? eventDate,
     String? eventLocation,
     bool? isCompleted,
+    int? totalRegistrations,
   }) {
     return EventModel(
       eventId: eventId,
@@ -66,6 +71,7 @@ class EventModel {
       eventLocation: eventLocation ?? this.eventLocation,
       isCompleted: isCompleted ?? this.isCompleted,
       createdAt: createdAt,
+      totalRegistrations: totalRegistrations ?? this.totalRegistrations,
     );
   }
 }

@@ -34,7 +34,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
   Future<void> _loadStudentData() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
-    
+
     if (authProvider.currentUser != null) {
       await dataProvider.loadStudent(authProvider.currentUser!.uid);
     }
@@ -78,22 +78,26 @@ class _StudentDashboardState extends State<StudentDashboard> {
             items: [
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.home_outlined, 0),
-                activeIcon: _buildNavIcon(Icons.home_rounded, 0, isActive: true),
+                activeIcon:
+                    _buildNavIcon(Icons.home_rounded, 0, isActive: true),
                 label: 'Home',
               ),
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.event_outlined, 1),
-                activeIcon: _buildNavIcon(Icons.event_rounded, 1, isActive: true),
+                activeIcon:
+                    _buildNavIcon(Icons.event_rounded, 1, isActive: true),
                 label: 'Events',
               ),
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.groups_outlined, 2),
-                activeIcon: _buildNavIcon(Icons.groups_rounded, 2, isActive: true),
+                activeIcon:
+                    _buildNavIcon(Icons.groups_rounded, 2, isActive: true),
                 label: 'Clubs',
               ),
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.settings_outlined, 3),
-                activeIcon: _buildNavIcon(Icons.settings_rounded, 3, isActive: true),
+                activeIcon:
+                    _buildNavIcon(Icons.settings_rounded, 3, isActive: true),
                 label: 'Settings',
               ),
             ],
@@ -107,7 +111,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: isActive 
+        color: isActive
             ? AppTheme.primaryOrange.withOpacity(0.15)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(12),

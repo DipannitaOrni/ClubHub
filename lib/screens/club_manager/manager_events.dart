@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:club_hub/widgets/event_card.dart';
 import '../../providers/data_provider.dart';
 import '../../services/firestore_service.dart';
 import '../../models/event_model.dart';
@@ -15,7 +14,8 @@ class ManagerEvents extends StatefulWidget {
   State<ManagerEvents> createState() => _ManagerEventsState();
 }
 
-class _ManagerEventsState extends State<ManagerEvents> with SingleTickerProviderStateMixin {
+class _ManagerEventsState extends State<ManagerEvents>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -405,7 +405,9 @@ class _ManagerEventsState extends State<ManagerEvents> with SingleTickerProvider
                     ),
                   ),
                   title: Text(
-                    event.isCompleted ? 'Mark as Upcoming' : 'Mark as Completed',
+                    event.isCompleted
+                        ? 'Mark as Upcoming'
+                        : 'Mark as Completed',
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
@@ -463,7 +465,8 @@ class _ManagerEventsState extends State<ManagerEvents> with SingleTickerProvider
           ),
           backgroundColor: AppTheme.primaryOrange,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
     }
@@ -517,7 +520,8 @@ class _ManagerEventsState extends State<ManagerEvents> with SingleTickerProvider
             content: const Text('Event deleted successfully'),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         );
       }

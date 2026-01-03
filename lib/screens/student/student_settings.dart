@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/data_provider.dart';
-import '../../models/student_model.dart';
 import '../../utils/theme.dart';
 import '../../utils/constants.dart';
 import '../../widgets/custom_text_field.dart';
@@ -31,8 +30,10 @@ class _StudentSettingsState extends State<StudentSettings> {
     final student = dataProvider.currentStudent;
 
     _nameController = TextEditingController(text: student?.fullName ?? '');
-    _levelTermController = TextEditingController(text: student?.levelTerm ?? '');
-    _contactController = TextEditingController(text: student?.contactNumber ?? '');
+    _levelTermController =
+        TextEditingController(text: student?.levelTerm ?? '');
+    _contactController =
+        TextEditingController(text: student?.contactNumber ?? '');
     _selectedDepartment = student?.department;
     _selectedInterests = List.from(student?.fieldsOfInterest ?? []);
   }
@@ -83,7 +84,8 @@ class _StudentSettingsState extends State<StudentSettings> {
           content: const Text('Profile updated successfully!'),
           backgroundColor: AppTheme.primaryOrange,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
     }
@@ -307,17 +309,20 @@ class _StudentSettingsState extends State<StudentSettings> {
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: DropdownButtonFormField<String>(
-                                    value: _selectedDepartment,
+                                    initialValue: _selectedDepartment,
                                     decoration: const InputDecoration(
                                       hintText: 'Select your department',
                                       border: InputBorder.none,
-                                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 16),
                                     ),
                                     items: AppConstants.departments.map((dept) {
-                                      return DropdownMenuItem(value: dept, child: Text(dept));
+                                      return DropdownMenuItem(
+                                          value: dept, child: Text(dept));
                                     }).toList(),
                                     onChanged: (value) {
-                                      setState(() => _selectedDepartment = value);
+                                      setState(
+                                          () => _selectedDepartment = value);
                                     },
                                   ),
                                 ),
@@ -361,7 +366,8 @@ class _StudentSettingsState extends State<StudentSettings> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Expanded(
                                           child: Text(
@@ -403,8 +409,10 @@ class _StudentSettingsState extends State<StudentSettings> {
                               child: OutlinedButton(
                                 onPressed: _logout,
                                 style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  side: const BorderSide(color: Colors.red, width: 2),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
+                                  side: const BorderSide(
+                                      color: Colors.red, width: 2),
                                   backgroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -505,7 +513,8 @@ class _StudentSettingsState extends State<StudentSettings> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
                   ),
                   child: const Text(
                     'Done',

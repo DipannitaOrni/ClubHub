@@ -31,7 +31,8 @@ class _ManagerSettingsState extends State<ManagerSettings> {
     final club = dataProvider.currentClub;
 
     _clubNameController = TextEditingController(text: club?.clubName ?? '');
-    _clubDescriptionController = TextEditingController(text: club?.clubDescription ?? '');
+    _clubDescriptionController =
+        TextEditingController(text: club?.clubDescription ?? '');
     _selectedCategory = club?.clubCategory;
   }
 
@@ -73,7 +74,8 @@ class _ManagerSettingsState extends State<ManagerSettings> {
           content: const Text('Profile updated successfully!'),
           backgroundColor: AppTheme.primaryOrange,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
     }
@@ -301,17 +303,22 @@ class _ManagerSettingsState extends State<ManagerSettings> {
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: DropdownButtonFormField<String>(
-                                        value: _selectedCategory,
+                                        initialValue: _selectedCategory,
                                         decoration: const InputDecoration(
                                           hintText: 'Select category',
                                           border: InputBorder.none,
-                                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 16),
                                         ),
-                                        items: AppConstants.clubCategories.map((category) {
-                                          return DropdownMenuItem(value: category, child: Text(category));
+                                        items: AppConstants.clubCategories
+                                            .map((category) {
+                                          return DropdownMenuItem(
+                                              value: category,
+                                              child: Text(category));
                                         }).toList(),
                                         onChanged: (value) {
-                                          setState(() => _selectedCategory = value);
+                                          setState(
+                                              () => _selectedCategory = value);
                                         },
                                       ),
                                     ),
@@ -355,7 +362,8 @@ class _ManagerSettingsState extends State<ManagerSettings> {
                           const SizedBox(height: 16),
 
                           StreamBuilder<List<StudentModel>>(
-                            stream: FirestoreService().getMembersByClub(club.clubId),
+                            stream: FirestoreService()
+                                .getMembersByClub(club.clubId),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                                 return Container(
@@ -378,7 +386,8 @@ class _ManagerSettingsState extends State<ManagerSettings> {
 
                               return Column(
                                 children: AppConstants.clubPosts.map((post) {
-                                  return _buildPostAssignment(club, post, snapshot.data!);
+                                  return _buildPostAssignment(
+                                      club, post, snapshot.data!);
                                 }).toList(),
                               );
                             },
@@ -391,8 +400,10 @@ class _ManagerSettingsState extends State<ManagerSettings> {
                             child: OutlinedButton(
                               onPressed: _logout,
                               style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 16),
-                                side: const BorderSide(color: Colors.red, width: 2),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                side: const BorderSide(
+                                    color: Colors.red, width: 2),
                                 backgroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -432,12 +443,15 @@ class _ManagerSettingsState extends State<ManagerSettings> {
     );
   }
 
-  Widget _buildPostAssignment(ClubModel club, String post, List<StudentModel> members) {
+  Widget _buildPostAssignment(
+      ClubModel club, String post, List<StudentModel> members) {
     final currentAssignee = club.clubPosts[post];
-    final assignedStudent = members.firstWhere(
-      (s) => s.uid == currentAssignee,
-      orElse: () => members.first,
-    );
+
+    // Only use currentAssignee if that member still exists in the members list
+    final validAssignee =
+        currentAssignee != null && members.any((m) => m.uid == currentAssignee)
+            ? currentAssignee
+            : null;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -463,9 +477,10 @@ class _ManagerSettingsState extends State<ManagerSettings> {
           Expanded(
             flex: 3,
             child: DropdownButtonFormField<String>(
-              value: currentAssignee,
+              value: validAssignee,
               decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 isDense: true,
                 filled: true,
                 fillColor: const Color(0xFFF5F5F5),
@@ -487,7 +502,8 @@ class _ManagerSettingsState extends State<ManagerSettings> {
               }).toList(),
               onChanged: (value) async {
                 if (value != null) {
-                  final dataProvider = Provider.of<DataProvider>(context, listen: false);
+                  final dataProvider =
+                      Provider.of<DataProvider>(context, listen: false);
                   final updatedPosts = Map<String, String>.from(club.clubPosts);
                   updatedPosts[post] = value;
                   final updatedClub = club.copyWith(clubPosts: updatedPosts);

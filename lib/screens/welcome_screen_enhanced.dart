@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'auth/login_screen.dart';        // ✅ FIXED - Removed ../
-import 'auth/signup_screen.dart';       // ✅ FIXED - Removed ../
+import 'auth/login_screen.dart'; // ✅ FIXED - Removed ../
+import 'auth/signup_screen.dart'; // ✅ FIXED - Removed ../
 import '../utils/theme.dart';
 
 class WelcomeScreenEnhanced extends StatefulWidget {
@@ -328,9 +328,11 @@ class AnimatedWavePainter extends CustomPainter {
     topPath.lineTo(0, size.height * 0.35);
 
     final cp1X = size.width * 0.3;
-    final cp1Y = size.height * 0.25 + math.sin(animationValue * 2 * math.pi) * 20;
+    final cp1Y =
+        size.height * 0.25 + math.sin(animationValue * 2 * math.pi) * 20;
     final cp2X = size.width * 0.7;
-    final cp2Y = size.height * 0.35 + math.cos(animationValue * 2 * math.pi) * 20;
+    final cp2Y =
+        size.height * 0.35 + math.cos(animationValue * 2 * math.pi) * 20;
 
     topPath.cubicTo(
       cp1X,
@@ -351,9 +353,11 @@ class AnimatedWavePainter extends CustomPainter {
     bottomPath.lineTo(0, size.height * 0.75);
 
     final cp3X = size.width * 0.4;
-    final cp3Y = size.height * 0.8 + math.sin(animationValue * 2 * math.pi + 1) * 20;
+    final cp3Y =
+        size.height * 0.8 + math.sin(animationValue * 2 * math.pi + 1) * 20;
     final cp4X = size.width * 0.8;
-    final cp4Y = size.height * 0.7 + math.cos(animationValue * 2 * math.pi + 1) * 20;
+    final cp4Y =
+        size.height * 0.7 + math.cos(animationValue * 2 * math.pi + 1) * 20;
 
     bottomPath.cubicTo(
       cp3X,

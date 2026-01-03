@@ -9,6 +9,7 @@ class StudentModel {
   final String contactNumber;
   final List<String> fieldsOfInterest;
   final List<String> joinedClubs; // Club IDs
+  final List<String> registeredEvents; // Event IDs
   final DateTime createdAt;
 
   StudentModel({
@@ -20,6 +21,7 @@ class StudentModel {
     required this.contactNumber,
     required this.fieldsOfInterest,
     this.joinedClubs = const [],
+    this.registeredEvents = const [],
     required this.createdAt,
   });
 
@@ -41,6 +43,7 @@ class StudentModel {
       'contactNumber': contactNumber,
       'fieldsOfInterest': fieldsOfInterest,
       'joinedClubs': joinedClubs,
+      'registeredEvents': registeredEvents,
       'createdAt': Timestamp.fromDate(createdAt),
     };
   }
@@ -56,6 +59,7 @@ class StudentModel {
       fieldsOfInterest: List<String>.from(map['fieldsOfInterest'] ?? []),
       joinedClubs: List<String>.from(map['joinedClubs'] ?? []),
       createdAt: (map['createdAt'] as Timestamp).toDate(),
+      registeredEvents: List<String>.from(map['registeredEvents'] ?? []),
     );
   }
 
@@ -66,6 +70,7 @@ class StudentModel {
     String? contactNumber,
     List<String>? fieldsOfInterest,
     List<String>? joinedClubs,
+    List<String>? registeredEvents,
   }) {
     return StudentModel(
       uid: uid,
@@ -76,6 +81,7 @@ class StudentModel {
       contactNumber: contactNumber ?? this.contactNumber,
       fieldsOfInterest: fieldsOfInterest ?? this.fieldsOfInterest,
       joinedClubs: joinedClubs ?? this.joinedClubs,
+      registeredEvents: registeredEvents ?? this.registeredEvents,
       createdAt: createdAt,
     );
   }

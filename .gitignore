@@ -43,3 +43,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+recommendation_system/serviceAccountKey.json
+recommendation_system/__pycache__/
+recommendation_system/*.pyc
+recommendation_system/.env

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:club_hub/widgets/event_card.dart';
 import '../../providers/data_provider.dart';
 import '../../services/firestore_service.dart';
 import '../../models/event_model.dart';
@@ -92,7 +91,8 @@ class ManagerHome extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
                           decoration: BoxDecoration(
                             color: AppTheme.primaryOrange,
                             borderRadius: BorderRadius.circular(20),
@@ -139,11 +139,14 @@ class ManagerHome extends StatelessWidget {
                           children: [
                             // Stats cards in single row
                             StreamBuilder<List<EventModel>>(
-                              stream: FirestoreService().getEventsByClub(club.clubId),
+                              stream: FirestoreService()
+                                  .getEventsByClub(club.clubId),
                               builder: (context, snapshot) {
                                 int upcomingCount = 0;
                                 if (snapshot.hasData) {
-                                  upcomingCount = snapshot.data!.where((e) => e.isUpcoming).length;
+                                  upcomingCount = snapshot.data!
+                                      .where((e) => e.isUpcoming)
+                                      .length;
                                 }
 
                                 return SingleChildScrollView(
@@ -202,9 +205,11 @@ class ManagerHome extends StatelessWidget {
                             const SizedBox(height: 16),
 
                             StreamBuilder<List<EventModel>>(
-                              stream: FirestoreService().getEventsByClub(club.clubId),
+                              stream: FirestoreService()
+                                  .getEventsByClub(club.clubId),
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
                                   return const Center(
                                     child: Padding(
                                       padding: EdgeInsets.all(32),
@@ -213,7 +218,8 @@ class ManagerHome extends StatelessWidget {
                                   );
                                 }
 
-                                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                if (!snapshot.hasData ||
+                                    snapshot.data!.isEmpty) {
                                   return Center(
                                     child: Container(
                                       padding: const EdgeInsets.all(32),
@@ -226,7 +232,8 @@ class ManagerHome extends StatelessWidget {
                                           Icon(
                                             Icons.event_busy_rounded,
                                             size: 64,
-                                            color: AppTheme.textSecondary.withOpacity(0.5),
+                                            color: AppTheme.textSecondary
+                                                .withOpacity(0.5),
                                           ),
                                           const SizedBox(height: 16),
                                           const Text(
@@ -245,7 +252,8 @@ class ManagerHome extends StatelessWidget {
                                 final upcomingEvents = snapshot.data!
                                     .where((event) => event.isUpcoming)
                                     .toList()
-                                  ..sort((a, b) => a.eventDate.compareTo(b.eventDate));
+                                  ..sort((a, b) =>
+                                      a.eventDate.compareTo(b.eventDate));
 
                                 if (upcomingEvents.isEmpty) {
                                   return Center(
@@ -260,7 +268,8 @@ class ManagerHome extends StatelessWidget {
                                           Icon(
                                             Icons.event_busy_rounded,
                                             size: 64,
-                                            color: AppTheme.textSecondary.withOpacity(0.5),
+                                            color: AppTheme.textSecondary
+                                                .withOpacity(0.5),
                                           ),
                                           const SizedBox(height: 16),
                                           const Text(
@@ -279,9 +288,12 @@ class ManagerHome extends StatelessWidget {
                                 return ListView.builder(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: upcomingEvents.length > 5 ? 5 : upcomingEvents.length,
+                                  itemCount: upcomingEvents.length > 5
+                                      ? 5
+                                      : upcomingEvents.length,
                                   itemBuilder: (context, index) {
-                                    return EventCard(event: upcomingEvents[index]);
+                                    return EventCard(
+                                        event: upcomingEvents[index]);
                                   },
                                 );
                               },
@@ -300,7 +312,8 @@ class ManagerHome extends StatelessWidget {
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+      String title, String value, IconData icon, Color color) {
     return Container(
       width: 140,
       padding: const EdgeInsets.all(20),
