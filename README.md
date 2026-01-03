@@ -42,7 +42,7 @@ ClubHub is a platform where students can discover and join clubs, while club man
 
 1. Clone the repo
 ```bash
-git clone https://github.com/yourusername/ClubHub.git
+git clone https://github.com/DipannitaOrni/ClubHub.git
 cd ClubHub
 ```
 
@@ -99,20 +99,6 @@ recommendation_system/
 3. **For Students**: Browse clubs, request to join, view events
 4. **For Managers**: Review requests, manage members, create events
 5. **Recommendations**: Python backend analyzes student interests and suggests clubs
-
-## Database Maintenance Scripts
-
-A few utility scripts are included to keep your Firestore data clean:
-
-- `fix_clubids.py` - Ensures all clubs and join requests have proper clubId fields
-- `fix_completed_events.py` - Updates club statistics based on actual past events
-
-Run these if you notice data inconsistencies.
-
-## Known Issues
-
-- Make sure all Firestore documents have the required fields (clubId, etc.)
-- The app expects clubs to have leadership roles assigned for proper display
 
 ## Contributing
 
